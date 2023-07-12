@@ -134,3 +134,42 @@ test <- unlist(supermarket_price_variability)
 
 write.csv(clean_supermarket_prices, file = "data1.csv", row.names = FALSE)
 write.csv(supermarket_price_variability, file = "data2.csv", row.names = FALSE)
+
+
+
+
+#Ingesting the new data
+#Load the Uber provided data
+new_data_set <- data.frame(read_excel("Take Home Exercise - NV Territory Analyst, Uber Eats CenAm - Data Set.xlsx"))
+
+
+new_data_set <- new_data_set %>% 
+  separate(. , date, into = c("date", "time"), sep = " ") %>%  
+  na.omit(.) %>% 
+  mutate_at(vars(basket, total_eater_promos), 
+            ~currency(., format = "f", digits = 2)) %>%
+  na.omit(.)
+
+
+
+#Exploratory Analysis
+avg_basket_by_category <- sqldf("SELECT category, avg(basket) as avg_basket, count(distinct(order_id)) as total_orders, avg(total_eater_promos) as avg_promo FROM new_data_set
+                             WHERE basket > 0
+                             GROUP BY category
+                             ORDER by avg_basket DESC
+                            ")
+
+
+avg_rev_by_category <- sqldf("SELECT category, ABS(avg(total_eater_promos/basket)) as discounted_per FROM new_data_set
+                             WHERE basket > 0
+                             GROUP BY category
+                             ORDER by discounted_per DESC
+                            ") 
+
+avg_rev_by_order_top10_category <- sqldf("SELECT order_id, category, sum(basket) as rev FROM new_data_set
+                             WHERE basket > 0
+                             GROUP BY user_id, category
+                             ORDER by rev DESC
+                             Limit 100
+                            ")
+
