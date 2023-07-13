@@ -158,6 +158,8 @@ avg_basket_by_category <- sqldf("SELECT category, avg(basket) as avg_basket, cou
                              ORDER by avg_basket DESC
                             ")
 
+sum(avg_basket_by_category$total_orders)
+
 
 avg_rev_by_category <- sqldf("SELECT category, ABS(avg(total_eater_promos/basket)) as discounted_per FROM new_data_set
                              WHERE basket > 0
@@ -173,9 +175,10 @@ a <- sqldf("SELECT date, order_id, category, sum(basket) as revenue, sum(total_e
 
 
 ggplot(data = a, aes(x = reorder(category, revenue), y = revenue, fill = category))+
-   geom_boxplot() + ylab("Total Revenue")+ labs(caption = "Source: Internal data")+
-   labs(title ="Revenue by cuisine type") +
-   theme(plot.title = element_text(hjust = 0.5))
+   geom_boxplot() + ylab("Total Revenue") + xlab("Category") + labs(caption = "Source: Internal data")+
+   labs(title ="Revenue by Category") +
+   theme(plot.title = element_text(hjust = 0.5),legend.position = "none")
+  
  
 
 #Exporting new data seet
