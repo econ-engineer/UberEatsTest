@@ -179,4 +179,4 @@ ggplot(data = a, aes(x = reorder(category, revenue), y = revenue, fill = categor
  
 
 #Exporting new data seet
-write.csv(supermarket_price_variability, file = "data3.csv", row.names = FALSE)
+write.csv(a, file = "data3.csv", row.names = FALSE)
