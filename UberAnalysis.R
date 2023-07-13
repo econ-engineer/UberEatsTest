@@ -127,7 +127,6 @@ supermarket_price_variability <- list(sort(sapply(subset(clean_supermarket_price
                                                          select = -FechaProducto), 
                                                   mad, na.rm = TRUE), decreasing =T))
 
-test <- unlist(supermarket_price_variability)
 
 
 #exporting the supermarket price analysis
@@ -166,10 +165,18 @@ avg_rev_by_category <- sqldf("SELECT category, ABS(avg(total_eater_promos/basket
                              ORDER by discounted_per DESC
                             ") 
 
-avg_rev_by_order_top10_category <- sqldf("SELECT order_id, category, sum(basket) as rev FROM new_data_set
-                             WHERE basket > 0
-                             GROUP BY user_id, category
-                             ORDER by rev DESC
-                             Limit 100
-                            ")
+a <- sqldf("SELECT date, order_id, category, sum(basket) as revenue, sum(total_eater_promos) , ABS(total_eater_promos/basket) as discounted_per FROM new_data_set
+                             WHERE basket > 0 AND discounted_per <= 0.4999999
+                             GROUP BY order_id
+                             ORDER BY revenue DESC
+                            ") %>% mutate(as.double(discounted_per)) %>% mutate(discounted_per = NULL) 
 
+
+ggplot(data = a, aes(x = reorder(category, revenue), y = revenue, fill = category))+
+   geom_boxplot() + ylab("Total Revenue")+ labs(caption = "Source: Internal data")+
+   labs(title ="Revenue by cuisine type") +
+   theme(plot.title = element_text(hjust = 0.5))
+ 
+
+#Exporting new data seet
+write.csv(supermarket_price_variability, file = "data3.csv", row.names = FALSE)
