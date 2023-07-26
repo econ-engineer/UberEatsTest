@@ -139,7 +139,7 @@ write.csv(supermarket_price_variability, file = "data2.csv", row.names = FALSE)
 
 #Ingesting the new data
 #Load the Uber provided data
-new_data_set <- data.frame(read_excel("Take Home Exercise - NV Territory Analyst, Uber Eats CenAm - Data Set.xlsx"))
+new_data_set <- data.frame(read_excel("Copy of Take Home Exercise - NV Territory Analyst, Uber Eats CenAm - Data Set.xlsx"))
 
 
 new_data_set <- new_data_set %>% 
@@ -182,4 +182,4 @@ ggplot(data = a, aes(x = reorder(category, revenue), y = revenue, fill = categor
  
 
 #Exporting new data seet
-write.csv(a, file = "data3.csv", row.names = FALSE)
+#write.csv(a, file = "data3.csv", row.names = FALSE)
